@@ -1,0 +1,246 @@
+/* ============================================================
+   ScriptureForge — Academic Sacred Text Platform v2
+   ============================================================ */
+:root {
+  --bg:#0d0d0f; --bg-2:#121215; --bg-3:#18181c; --bg-4:#1e1e24;
+  --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.15);
+  --text:#e8e4d9; --text-2:#a09a8e; --text-3:#6b6560;
+  --gold:#c9a84c; --gold-dim:rgba(201,168,76,0.15); --gold-glow:rgba(201,168,76,0.06);
+  --bible:#7eb8d4; --bible-dim:rgba(126,184,212,0.10);
+  --quran:#7dba8f; --quran-dim:rgba(125,186,143,0.10);
+  --hindu:#d4876a; --hindu-dim:rgba(212,135,106,0.10);
+  --radius:4px; --radius-lg:8px;
+  --font-display:'Cinzel',serif; --font-body:'Crimson Pro',Georgia,serif; --font-mono:'JetBrains Mono',monospace;
+  --shadow:0 2px 16px rgba(0,0,0,.5); --shadow-lg:0 8px 40px rgba(0,0,0,.7);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-size:17px;line-height:1.7;min-height:100vh;overflow-x:hidden;}
+
+/* LOADING */
+#loading-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease;}
+#loading-screen.fade-out{opacity:0;pointer-events:none;}
+.loading-inner{text-align:center;max-width:320px;}
+.loading-glyph{font-size:48px;color:var(--gold);display:block;margin-bottom:24px;animation:pulse-glyph 2s ease-in-out infinite;}
+@keyframes pulse-glyph{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+.loading-text{font-family:var(--font-display);font-size:14px;letter-spacing:.15em;color:var(--text-2);margin-bottom:20px;}
+.loading-bar{height:2px;background:var(--bg-4);border-radius:2px;overflow:hidden;margin-bottom:12px;}
+.loading-fill{height:100%;background:linear-gradient(90deg,var(--gold),rgba(201,168,76,.4));width:0%;transition:width .3s ease;}
+.loading-detail{font-size:13px;color:var(--text-3);font-family:var(--font-mono);}
+
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;}
+.header-inner{max-width:1600px;margin:0 auto;display:flex;align-items:center;gap:28px;height:60px;}
+.logo-block{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.logo-icon{font-size:20px;color:var(--gold);}
+.logo-title{font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:.08em;}
+.logo-sub{font-size:10px;color:var(--text-3);letter-spacing:.12em;font-family:var(--font-mono);text-transform:uppercase;}
+.main-nav{display:flex;gap:4px;}
+.nav-btn{background:none;border:1px solid transparent;color:var(--text-2);padding:6px 16px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;transition:all .2s;}
+.nav-btn:hover{color:var(--text);border-color:var(--border-strong);}
+.nav-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.corpus-toggles{margin-left:auto;display:flex;gap:10px;align-items:center;}
+.corpus-chip{display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text-3);transition:all .2s;font-family:var(--font-mono);user-select:none;}
+.corpus-chip input{display:none;}
+.corpus-chip.active{color:var(--text);border-color:var(--border-strong);}
+.chip-dot{width:7px;height:7px;border-radius:50%;}
+.bible-dot{background:var(--bible);} .quran-dot{background:var(--quran);} .hindu-dot{background:var(--hindu);}
+
+/* VIEWS */
+#app{max-width:1600px;margin:0 auto;padding:0 24px 80px;}
+.hidden{display:none!important;}
+.view{display:none;padding-top:36px;}
+.view.active-view{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.view-header{margin-bottom:28px;}
+.view-title{font-family:var(--font-display);font-size:26px;font-weight:400;letter-spacing:.04em;margin-bottom:6px;}
+.view-desc{color:var(--text-2);font-size:15px;}
+
+/* SEARCH BAR */
+.search-bar-wrap{margin-bottom:20px;}
+.search-bar{display:flex;align-items:center;gap:12px;background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:12px;transition:border-color .2s;}
+.search-bar:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);}
+.search-icon{color:var(--gold);font-size:18px;flex-shrink:0;}
+#search-input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:17px;}
+#search-input::placeholder{color:var(--text-3);}
+.search-mode-toggle{display:flex;gap:2px;background:var(--bg-4);border-radius:var(--radius);padding:2px;flex-shrink:0;}
+.mode-btn{background:none;border:none;color:var(--text-3);padding:4px 12px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:11px;transition:all .2s;}
+.mode-btn.active{background:var(--bg-2);color:var(--gold);}
+.search-exec-btn{background:var(--gold);color:var(--bg);border:none;padding:8px 20px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-display);font-size:12px;letter-spacing:.08em;font-weight:600;transition:opacity .2s;flex-shrink:0;}
+.search-exec-btn:hover{opacity:.85;}
+.search-filters{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.filter-group{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);font-family:var(--font-mono);}
+.filter-group select{background:var(--bg-3);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:var(--radius);font-family:var(--font-mono);font-size:12px;cursor:pointer;outline:none;}
+.filter-group select:focus{border-color:var(--gold);}
+.clear-btn{background:none;border:1px solid var(--border);color:var(--text-3);padding:4px 12px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:11px;transition:all .2s;}
+.clear-btn:hover{border-color:var(--border-strong);color:var(--text-2);}
+
+/* SEMANTIC PANEL */
+.semantic-panel{background:var(--gold-glow);border:1px solid rgba(201,168,76,.25);border-radius:var(--radius-lg);padding:18px 22px;margin-bottom:20px;}
+.semantic-label{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.12em;margin-bottom:8px;text-transform:uppercase;}
+.semantic-text{font-size:16px;color:var(--text);line-height:1.8;}
+
+/* RESULTS */
+.results-count{font-family:var(--font-mono);font-size:12px;color:var(--text-3);margin-bottom:14px;}
+
+/* ─── TRADITION COMPARE LAYOUT ─── */
+.compare-view{width:100%;}
+.compare-columns{display:grid;gap:20px;align-items:start;}
+.compare-columns.cols-1{grid-template-columns:1fr;}
+.compare-columns.cols-2{grid-template-columns:repeat(2,1fr);}
+.compare-columns.cols-3{grid-template-columns:repeat(3,1fr);}
+
+.compare-col{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;}
+.compare-col-header{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:10;backdrop-filter:blur(8px);}
+.compare-col-header.bible-header{background:rgba(126,184,212,0.06);}
+.compare-col-header.quran-header{background:rgba(125,186,143,0.06);}
+.compare-col-header.hindu-header{background:rgba(212,135,106,0.06);}
+.compare-col-trad{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
+.compare-col-trad.bible{color:var(--bible);}
+.compare-col-trad.quran{color:var(--quran);}
+.compare-col-trad.hindu{color:var(--hindu);}
+.compare-col-count{font-family:var(--font-mono);font-size:11px;color:var(--text-3);}
+.compare-col-body{padding:8px 0;flex:1;}
+
+.compare-verse-item{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .15s;position:relative;}
+.compare-verse-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;opacity:0;transition:opacity .15s;}
+.compare-verse-item:hover{background:rgba(255,255,255,0.025);}
+.compare-verse-item:hover::before{opacity:1;}
+.compare-verse-item.bible::before{background:var(--bible);}
+.compare-verse-item.quran::before{background:var(--quran);}
+.compare-verse-item.hindu::before{background:var(--hindu);}
+
+.cvi-ref{font-family:var(--font-display);font-size:12px;color:var(--text-3);margin-bottom:5px;letter-spacing:.03em;}
+.cvi-text{font-size:15px;line-height:1.65;color:var(--text);}
+.cvi-text em{background:rgba(201,168,76,.2);color:var(--gold);font-style:normal;border-radius:2px;padding:0 2px;}
+
+/* CARD GRID layout */
+.grid-view{}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.verse-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.verse-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.verse-card.bible::before{background:var(--bible);}
+.verse-card.quran::before{background:var(--quran);}
+.verse-card.hindu::before{background:var(--hindu);}
+.verse-card:hover{border-color:var(--border-strong);transform:translateY(-2px);box-shadow:var(--shadow);}
+.card-tradition{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.card-tradition.bible{color:var(--bible);} .card-tradition.quran{color:var(--quran);} .card-tradition.hindu{color:var(--hindu);}
+.card-ref{font-family:var(--font-display);font-size:13px;color:var(--text-2);margin-bottom:8px;}
+.card-text{font-size:15px;line-height:1.65;color:var(--text);}
+.card-text em{background:rgba(201,168,76,.2);color:var(--gold);font-style:normal;border-radius:2px;padding:0 2px;}
+
+/* EMPTY / HINT */
+.empty-state,.search-hint{text-align:center;padding:60px 24px;color:var(--text-2);}
+.empty-glyph{font-size:48px;color:var(--text-3);margin-bottom:16px;}
+.example-searches{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;}
+.example-label{font-family:var(--font-mono);font-size:12px;color:var(--text-3);}
+.example-searches button{background:var(--bg-3);border:1px solid var(--border);color:var(--text-2);padding:5px 14px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:14px;transition:all .2s;}
+.example-searches button:hover{border-color:var(--gold);color:var(--gold);}
+
+/* PARALLEL */
+.parallel-controls{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;}
+.parallel-picker{display:flex;flex-direction:column;gap:7px;flex:1;min-width:200px;}
+.parallel-picker label{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
+.parallel-picker select,.par-extra-controls select{background:var(--bg-3);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:var(--radius);font-family:var(--font-body);font-size:14px;outline:none;cursor:pointer;}
+.parallel-picker select:focus,.par-extra-controls select:focus{border-color:var(--gold);}
+.par-to{font-family:var(--font-mono);font-size:12px;color:var(--text-3);align-self:center;}
+.par-extra-controls{display:flex;flex-direction:column;gap:7px;}
+.ai-compare-btn{background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);padding:9px 22px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-display);font-size:13px;letter-spacing:.08em;transition:all .2s;white-space:nowrap;}
+.ai-compare-btn:hover{background:var(--gold);color:var(--bg);}
+.parallel-ai{background:var(--gold-glow);border:1px solid rgba(201,168,76,.25);border-radius:var(--radius-lg);padding:18px 22px;margin-bottom:20px;}
+.parallel-panes{display:grid;grid-template-columns:1fr auto 1fr;min-height:500px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.parallel-pane{padding:24px;overflow-y:auto;max-height:70vh;}
+.parallel-divider{width:1px;background:var(--border);flex-shrink:0;}
+.pane-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.pane-tradition{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;}
+.bible-color{color:var(--bible);} .quran-color{color:var(--quran);} .hindu-color{color:var(--hindu);}
+.pane-ref{font-family:var(--font-display);font-size:12px;color:var(--text-2);}
+.verse-line{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.verse-num{font-family:var(--font-mono);font-size:11px;color:var(--text-3);min-width:22px;padding-top:3px;flex-shrink:0;}
+.verse-body{font-size:16px;line-height:1.75;}
+
+/* LIBRARY */
+.library-layout{display:grid;grid-template-columns:240px 1fr;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;min-height:70vh;}
+.library-sidebar{border-right:1px solid var(--border);overflow-y:auto;max-height:82vh;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.sidebar-section{padding:12px 0;border-bottom:1px solid var(--border);}
+.sidebar-corpus-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:0 14px 8px;}
+.testament-header{padding:7px 14px;font-family:var(--font-mono);font-size:12px;color:var(--text-2);cursor:pointer;display:flex;justify-content:space-between;transition:color .2s;}
+.testament-header:hover{color:var(--text);}
+.book-list{padding-bottom:4px;}
+.book-btn{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text-2);padding:4px 20px;cursor:pointer;font-family:var(--font-body);font-size:14px;transition:all .15s;}
+.book-btn:hover{color:var(--text);background:var(--bg-3);}
+.book-btn.active{color:var(--gold);background:var(--gold-glow);}
+.library-reader{overflow:hidden;display:flex;flex-direction:column;}
+.reader-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-3);text-align:center;padding:60px;}
+.reader-content{display:flex;flex-direction:column;flex:1;}
+.reader-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid var(--border);background:var(--bg-3);flex-wrap:wrap;gap:10px;}
+.reader-book-title{font-family:var(--font-display);font-size:18px;letter-spacing:.04em;}
+.chapter-nav{display:flex;gap:7px;align-items:center;}
+.chapter-nav button{background:var(--bg-4);border:1px solid var(--border);color:var(--text-2);padding:5px 12px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:12px;transition:all .2s;}
+.chapter-nav button:hover{border-color:var(--border-strong);color:var(--text);}
+.chapter-nav select{background:var(--bg-4);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:var(--radius);font-family:var(--font-mono);font-size:12px;cursor:pointer;outline:none;}
+.reader-quran-bar{display:flex;gap:6px;align-items:center;padding:10px 24px;background:var(--bg-3);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.qtrans-bar-label{font-family:var(--font-mono);font-size:11px;color:var(--text-3);}
+.trans-btn{background:var(--bg-4);border:1px solid var(--border);color:var(--text-2);padding:4px 12px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:11px;transition:all .2s;}
+.trans-btn:hover{color:var(--text);}
+.trans-btn.active{background:var(--quran-dim);border-color:var(--quran);color:var(--quran);}
+.reader-verses{padding:24px;overflow-y:auto;max-height:calc(82vh - 110px);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.reader-verse-line{display:flex;gap:14px;padding:5px 0;cursor:pointer;border-radius:var(--radius);transition:background .15s;}
+.reader-verse-line:hover{background:rgba(255,255,255,.03);}
+.reader-verse-num{font-family:var(--font-mono);font-size:11px;color:var(--gold);min-width:26px;padding-top:3px;flex-shrink:0;text-align:right;}
+.reader-verse-text{font-size:16px;line-height:1.75;}
+/* Quran all-three layout */
+.reader-verse-multi{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;}
+.reader-verse-multi:hover{background:rgba(255,255,255,.02);}
+.rvm-header{display:flex;gap:10px;align-items:baseline;margin-bottom:6px;}
+.rvm-num{font-family:var(--font-mono);font-size:11px;color:var(--gold);}
+.rvm-ref{font-family:var(--font-display);font-size:12px;color:var(--text-3);}
+.rvm-row{display:flex;gap:10px;padding:3px 0;}
+.rvm-tname{font-family:var(--font-mono);font-size:10px;color:var(--text-3);min-width:72px;padding-top:2px;flex-shrink:0;}
+.rvm-text{font-size:15px;line-height:1.65;}
+.reader-nav-bottom{display:flex;justify-content:space-between;padding:14px 24px;border-top:1px solid var(--border);}
+.reader-nav-bottom button{background:none;border:1px solid var(--border);color:var(--text-2);padding:7px 18px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:12px;transition:all .2s;}
+.reader-nav-bottom button:hover{border-color:var(--gold);color:var(--gold);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);}
+.modal-box{background:var(--bg-3);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:30px;max-width:640px;width:100%;position:relative;box-shadow:var(--shadow-lg);animation:slideUp .25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-3);cursor:pointer;font-size:16px;transition:color .2s;}
+.modal-close:hover{color:var(--text);}
+.modal-corpus-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.modal-corpus-tag.bible{color:var(--bible);} .modal-corpus-tag.quran{color:var(--quran);} .modal-corpus-tag.hindu{color:var(--hindu);}
+.modal-ref{font-family:var(--font-display);font-size:14px;color:var(--gold);letter-spacing:.04em;margin-bottom:14px;}
+.modal-text{font-size:19px;line-height:1.8;color:var(--text);margin-bottom:16px;font-style:italic;}
+.modal-quran-trans{background:var(--bg-4);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;}
+.qtrans-row{display:flex;gap:12px;align-items:baseline;}
+.qtrans-label{font-family:var(--font-mono);font-size:10px;color:var(--quran);min-width:70px;flex-shrink:0;letter-spacing:.08em;}
+.qtrans-text{font-size:15px;line-height:1.65;}
+.modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.modal-actions button{background:var(--bg-4);border:1px solid var(--border);color:var(--text-2);padding:7px 15px;border-radius:var(--radius);cursor:pointer;font-family:var(--font-mono);font-size:12px;transition:all .2s;}
+.modal-actions button:hover{border-color:var(--gold);color:var(--gold);}
+.modal-ai{background:var(--gold-glow);border:1px solid rgba(201,168,76,.2);border-radius:var(--radius);padding:14px;font-size:15px;line-height:1.7;color:var(--text);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
+
+/* AI loader dots */
+.ai-loading{display:inline-flex;gap:4px;align-items:center;}
+.ai-loading span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:dot-bounce 1.2s ease-in-out infinite;}
+.ai-loading span:nth-child(2){animation-delay:.2s;}
+.ai-loading span:nth-child(3){animation-delay:.4s;}
+@keyframes dot-bounce{0%,80%,100%{transform:scale(.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .header-inner{flex-wrap:wrap;height:auto;padding:10px 0;gap:8px;}
+  .corpus-toggles{order:3;}
+  .compare-columns.cols-2,.compare-columns.cols-3{grid-template-columns:1fr;}
+  .parallel-panes{grid-template-columns:1fr;}
+  .parallel-divider{display:none;}
+  .library-layout{grid-template-columns:1fr;}
+  .library-sidebar{max-height:240px;border-right:none;border-bottom:1px solid var(--border);}
+  .results-grid{grid-template-columns:1fr;}
+}
